@@ -87,21 +87,37 @@ function render() {
       const isPrivate = !file['Drive URL'] || file['Drive URL'].trim() === '';
       const displayName = file['Filename (Rename)'] || file['Original Name'] || 'file';
 
-      if (isPrivate) {
-        // File private → tampilkan teks saja
-        d.textContent = `🔒 ${displayName} (Dokumen Internal)`;
-      } else {
-        // File publik → buat link
+//      if (isPrivate) {
+//        // File private → tampilkan teks saja
+//        d.textContent = `🔒 ${displayName} (Dokumen Internal)`;
+//      } else {
+//        // File publik → buat link
+//        const a = document.createElement('a');
+//        a.href = file['Drive URL'];
+//        a.target = '_blank';
+//        a.textContent = displayName;
+//        d.appendChild(a);
+//      }
+//
+//      ul.appendChild(d);
+//    });
         const a = document.createElement('a');
-        a.href = file['Drive URL'];
-        a.target = '_blank';
         a.textContent = displayName;
+        
+        if (isPrivate) {
+          a.href = '#';
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert("Dokumen Internal, Hubungi Admin!");
+          });
+        } else {
+          a.href = file['Drive URL'];
+          a.target = '_blank';
+        }
+        
         d.appendChild(a);
-      }
-
-      ul.appendChild(d);
     });
-
+      
     details.appendChild(ul);
     container.appendChild(details);
   });
