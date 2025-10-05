@@ -58,7 +58,7 @@ function render() {
   if (!container) return;
 
   const loadingEl = document.getElementById('loading');
-  if (loadingEl) loadingEl.remove(); // aman, tidak error meski null
+  if (loadingEl) loadingEl.remove();
 
   container.innerHTML = '';
   if (!RAW || RAW.length === 0) {
@@ -68,7 +68,7 @@ function render() {
 
   const grouped = {};
   RAW.forEach(item => {
-    const path = (item.FolderPath || '').trim() || '';
+    const path = (item.FolderPath || '').trim() || '(root)';
     (grouped[path] = grouped[path] || []).push(item);
   });
 
@@ -79,14 +79,26 @@ function render() {
     details.appendChild(summary);
 
     const ul = document.createElement('div');
+
     grouped[folderPath].forEach(file => {
       const d = document.createElement('div');
       d.className = 'file';
-      const a = document.createElement('a');
-      a.href = file['Drive URL'] || '#';
-      a.target = '_blank';
-      a.textContent = file['Filename (Rename)'] || file['Original Name'] || 'file';
-      d.appendChild(a);
+
+      const isPrivate = !file['Drive URL'] || file['Drive URL'].trim() === '';
+      const displayName = file['Filename (Rename)'] || file['Original Name'] || 'file';
+
+      if (isPrivate) {
+        // File private → tampilkan teks saja
+        d.textContent = `🔒 ${displayName} (Dokumen Internal)`;
+      } else {
+        // File publik → buat link
+        const a = document.createElement('a');
+        a.href = file['Drive URL'];
+        a.target = '_blank';
+        a.textContent = displayName;
+        d.appendChild(a);
+      }
+
       ul.appendChild(d);
     });
 
