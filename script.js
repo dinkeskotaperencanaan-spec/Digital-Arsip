@@ -1,6 +1,7 @@
 // script.js - fetch data_arsip.json (assumes file at repo root)
 const DATA_PATH = 'data_arsip.json'; // jika kamu taruh di folder, ubah pathnya
 let RAW = [];
+const res = await fetch(DATA_PATH + '?v=' + Date.now(), { cache: "no-store" });
 
 async function fetchData(){
   try {
