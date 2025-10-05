@@ -4,18 +4,19 @@ console.log("Script.js berhasil dimuat.");
 let RAW = [];
 const DATA_PATH = './data_arsip.json'; // file di folder yang sama dengan index.html
 
-async function fetchData(){
+async function fetchData() {
   try {
-    //document.getElementById('loading').textContent = 'Memuat katalog…';
-    document.getElementById('loading')?.remove()
-    const res = await fetch(DATA_PATH + '?v=' + Date.now(), {cache: "no-store"});
-    if(!res.ok) throw new Error('Tidak bisa memuat data: ' + res.status);
+    const loadingEl = document.getElementById('loading');
+    if (loadingEl) loadingEl.textContent = 'Memuat katalog…';
+
+    const res = await fetch(DATA_PATH + '?v=' + Date.now(), { cache: "no-store" });
+    if (!res.ok) throw new Error('Tidak bisa memuat data: ' + res.status);
     RAW = await res.json();
     render();
     populateJenis();
   } catch (e) {
-    document.getElementById('treeContainer').innerHTML =
-      '<p style="color:red">Gagal memuat data_arsip.json — cek repo atau path.</p>';
+    const container = document.getElementById('treeContainer');
+    container.innerHTML = '<p style="color:red">Gagal memuat data_arsip.json — cek repo atau path.</p>';
     console.error(e);
   }
 }
@@ -44,22 +45,25 @@ function buildTree(list){
   return root;
 }
 
-function render(){
+function render() {
   const container = document.getElementById('treeContainer');
+  if (!container) return;
+
+  const loadingEl = document.getElementById('loading');
+  if (loadingEl) loadingEl.remove(); // aman, tidak error meski null
+
   container.innerHTML = '';
-  if(!RAW || RAW.length === 0){
+  if (!RAW || RAW.length === 0) {
     container.innerHTML = '<p>Tidak ada dokumen.</p>';
     return;
   }
 
-  // if folderPath missing, treat as root files
   const grouped = {};
   RAW.forEach(item => {
-    const path = (item.FolderPath || item.folderPath || item.folderpath || '').trim() || '';
-    (grouped[path] = grouped[path]||[]).push(item);
+    const path = (item.FolderPath || '').trim() || '';
+    (grouped[path] = grouped[path] || []).push(item);
   });
 
-  // Option A: render as collapsible by folderPath
   Object.keys(grouped).sort().forEach(folderPath => {
     const details = document.createElement('details');
     const summary = document.createElement('summary');
@@ -71,23 +75,16 @@ function render(){
       const d = document.createElement('div');
       d.className = 'file';
       const a = document.createElement('a');
-      a.href = file['Drive URL'] || file.driveUrl || file.driveURL || file.drive_url || '#';
+      a.href = file['Drive URL'] || '#';
       a.target = '_blank';
-      a.textContent = file['Filename (Rename)'] || file.filename || file.name || (file.OriginalName || file['Original Name'] || 'file');
+      a.textContent = file['Filename (Rename)'] || file['Original Name'] || 'file';
       d.appendChild(a);
-      if (file.JenisDokumen || file['Jenis Dokumen'] || file.jenis) {
-        const meta = document.createElement('small');
-        meta.textContent = ' — ' + (file['Jenis Dokumen'] || file.jenis || '');
-        d.appendChild(meta);
-      }
       ul.appendChild(d);
     });
 
     details.appendChild(ul);
     container.appendChild(details);
   });
-
-  document.getElementById('loading').remove();
 }
 
 function populateJenis(){
