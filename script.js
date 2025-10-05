@@ -58,7 +58,7 @@ function render() {
   if (!container) return;
 
   const loadingEl = document.getElementById('loading');
-  if (loadingEl) loadingEl.remove();
+  if (loadingEl) loadingEl.remove(); // hapus teks loading
 
   container.innerHTML = '';
   if (!RAW || RAW.length === 0) {
@@ -66,12 +66,14 @@ function render() {
     return;
   }
 
+  // Group berdasarkan FolderPath
   const grouped = {};
   RAW.forEach(item => {
     const path = (item.FolderPath || '').trim() || '(root)';
     (grouped[path] = grouped[path] || []).push(item);
   });
 
+  // Urutkan folder dan render
   Object.keys(grouped).sort().forEach(folderPath => {
     const details = document.createElement('details');
     const summary = document.createElement('summary');
@@ -81,43 +83,32 @@ function render() {
     const ul = document.createElement('div');
 
     grouped[folderPath].forEach(file => {
-//      const d = document.createElement('div');
-//      d.className = 'file';
+      const d = document.createElement('div');
+      d.className = 'file';
 
-//      const isPrivate = !file['Drive URL'] || file['Drive URL'].trim() === '';
-//      const displayName = file['Filename (Rename)'] || file['Original Name'] || 'file';
+      const displayName = file['Filename (Rename)'] || file['Original Name'] || 'file';
+      const isPrivate = !file['Drive URL'] || file['Drive URL'].trim() === '';
 
-//      if (isPrivate) {
-//        // File private → tampilkan teks saja
-//        d.textContent = `🔒 ${displayName} (Dokumen Internal)`;
-//      } else {
-//        // File publik → buat link
-//        const a = document.createElement('a');
-//        a.href = file['Drive URL'];
-//        a.target = '_blank';
-//        a.textContent = displayName;
-//        d.appendChild(a);
-//      }
-//
-//      ul.appendChild(d);
-//    });
       const a = document.createElement('a');
       a.textContent = displayName;
-      
+
       if (isPrivate) {
-         a.href = '#';
-         a.addEventListener('click', (e) => {
-           e.preventDefault();
-           alert("Dokumen Internal, Hubungi Admin!");
-         });
-       } else {
-         a.href = file['Drive URL'];
-         a.target = '_blank';
-       }
-       
-       d.appendChild(a);
-   });
-      
+        // File private → klik muncul alert
+        a.href = '#';
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          alert("🔒 Dokumen Internal, Hubungi Admin!");
+        });
+      } else {
+        // File publik → link ke Drive
+        a.href = file['Drive URL'];
+        a.target = '_blank';
+      }
+
+      d.appendChild(a);
+      ul.appendChild(d);
+    });
+
     details.appendChild(ul);
     container.appendChild(details);
   });
