@@ -123,5 +123,5 @@ document.getElementById('search')?.addEventListener('input', () => applyFilters(
 document.getElementById('filterJenis')?.addEventListener('change', () => applyFilters());
 document.getElementById('refresh')?.addEventListener('click', () => fetchData());
 
-const res = await fetch(DATA_PATH + '?v=' + Date.now(), { cache: "no-store" });
+// const res = await fetch(DATA_PATH + '?v=' + Date.now(), { cache: "no-store" });
 fetchData();
