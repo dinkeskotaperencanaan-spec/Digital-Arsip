@@ -66,46 +66,64 @@ function render() {
     return;
   }
 
-  // Group berdasarkan FolderPath
+  // Group berdasarkan folder terakhir dari FolderPath
   const grouped = {};
   RAW.forEach(item => {
-    const path = (item.FolderPath || '').trim() || '(root)';
-    (grouped[path] = grouped[path] || []).push(item);
+    const fullPath = (item.FolderPath || '').trim() || '(root)';
+    const parts = fullPath.split('/').filter(Boolean);
+    const folderName = parts.length ? parts[parts.length - 1] : '(root)';
+    (grouped[folderName] = grouped[folderName] || []).push(item);
   });
 
   // Urutkan folder dan render
-  Object.keys(grouped).sort().forEach(folderPath => {
+  Object.keys(grouped).sort().forEach(folderName => {
     const details = document.createElement('details');
     const summary = document.createElement('summary');
-    summary.textContent = folderPath || '(root)';
+    summary.textContent = folderName || '(root)';
     details.appendChild(summary);
 
     const ul = document.createElement('div');
 
-    grouped[folderPath].forEach(file => {
+    grouped[folderName].forEach(file => {
       const d = document.createElement('div');
       d.className = 'file';
 
       const displayName = file['Filename (Rename)'] || file['Original Name'] || 'file';
       const isPrivate = !file['Drive URL'] || file['Drive URL'].trim() === '';
 
-      const a = document.createElement('a');
-      a.textContent = displayName;
-
+      // Nama file clickable
+      const nameLink = document.createElement('a');
+      nameLink.textContent = displayName;
       if (isPrivate) {
-        // File private → klik muncul alert
-        a.href = '#';
-        a.addEventListener('click', (e) => {
+        nameLink.href = '#';
+        nameLink.addEventListener('click', e => {
           e.preventDefault();
           alert("🔒 Dokumen Internal, Hubungi Admin!");
         });
       } else {
-        // File publik → link ke Drive
-        a.href = file['Drive URL'];
-        a.target = '_blank';
+        nameLink.href = file['Drive URL'];
+        nameLink.target = '_blank';
       }
+      d.appendChild(nameLink);
 
-      d.appendChild(a);
+      // Tambahkan tombol [Download]
+      const dl = document.createElement('a');
+      dl.textContent = ' [Download]';
+      dl.style.marginLeft = '8px';
+      dl.style.color = '#0366d6';
+      dl.style.cursor = 'pointer';
+      if (isPrivate) {
+        dl.addEventListener('click', e => {
+          e.preventDefault();
+          alert("🔒 Dokumen Internal, Hubungi Admin!");
+        });
+      } else {
+        dl.href = file['Drive URL'];
+        dl.target = '_blank';
+        dl.setAttribute('download', displayName);
+      }
+      d.appendChild(dl);
+
       ul.appendChild(d);
     });
 
