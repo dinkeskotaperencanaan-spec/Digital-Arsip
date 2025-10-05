@@ -1,6 +1,7 @@
 // script.js - fetch data_arsip.json (assumes file at repo root)
 console.log("Script.js berhasil dimuat.");
-const DATA_PATH = 'data_arsip.json'; // jika kamu taruh di folder, ubah pathnya
+//const DATA_PATH = 'data_arsip.json'; // jika kamu taruh di folder, ubah pathnya
+const DATA_PATH = './data_arsip.json';
 let RAW = [];
 
 async function fetchData(){
