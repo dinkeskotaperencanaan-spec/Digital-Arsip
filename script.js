@@ -101,22 +101,22 @@ function render() {
 //
 //      ul.appendChild(d);
 //    });
-        const a = document.createElement('a');
-        a.textContent = displayName;
-        
-        if (isPrivate) {
-          a.href = '#';
-          a.addEventListener('click', (e) => {
-            e.preventDefault();
-            alert("Dokumen Internal, Hubungi Admin!");
-          });
-        } else {
-          a.href = file['Drive URL'];
-          a.target = '_blank';
-        }
-        
-        d.appendChild(a);
-    });
+      const a = document.createElement('a');
+      a.textContent = displayName;
+      
+      if (isPrivate) {
+         a.href = '#';
+         a.addEventListener('click', (e) => {
+           e.preventDefault();
+           alert("Dokumen Internal, Hubungi Admin!");
+         });
+       } else {
+         a.href = file['Drive URL'];
+         a.target = '_blank';
+       }
+       
+       d.appendChild(a);
+   });
       
     details.appendChild(ul);
     container.appendChild(details);
