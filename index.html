@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Arsip Digital</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Arsip Digital</h1>
+    <div class="controls">
+      <input id="search" placeholder="Cari nama file atau folder..." />
+      <select id="filterJenis"><option value="">Semua Jenis</option></select>
+      <button id="refresh">Refresh</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="treeContainer">
+      <p id="loading">Memuat katalog…</p>
+    </section>
+  </main>
+
+  <footer>
+    <small>Generated from <code>data_arsip.json</code></small>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
