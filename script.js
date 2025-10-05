@@ -81,11 +81,11 @@ function render() {
     const ul = document.createElement('div');
 
     grouped[folderPath].forEach(file => {
-      const d = document.createElement('div');
-      d.className = 'file';
+//      const d = document.createElement('div');
+//      d.className = 'file';
 
-      const isPrivate = !file['Drive URL'] || file['Drive URL'].trim() === '';
-      const displayName = file['Filename (Rename)'] || file['Original Name'] || 'file';
+//      const isPrivate = !file['Drive URL'] || file['Drive URL'].trim() === '';
+//      const displayName = file['Filename (Rename)'] || file['Original Name'] || 'file';
 
 //      if (isPrivate) {
 //        // File private → tampilkan teks saja
