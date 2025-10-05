@@ -1,5 +1,12 @@
 // script.js - fetch data_arsip.json (assumes file at repo root)
 console.log("Script.js berhasil dimuat.");
+
+/ Jalankan fetchData() hanya setelah seluruh HTML siap
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM siap, memulai fetch data...");
+  fetchData();
+});
+
 //const DATA_PATH = 'data_arsip.json'; // jika kamu taruh di folder, ubah pathnya
 let RAW = [];
 const DATA_PATH = './data_arsip.json'; // file di folder yang sama dengan index.html
@@ -124,4 +131,4 @@ document.getElementById('filterJenis')?.addEventListener('change', () => applyFi
 document.getElementById('refresh')?.addEventListener('click', () => fetchData());
 
 // const res = await fetch(DATA_PATH + '?v=' + Date.now(), { cache: "no-store" });
-fetchData();
+//fetchData();
