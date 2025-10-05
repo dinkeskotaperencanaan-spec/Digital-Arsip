@@ -1,45 +1,187 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Arsip Digital</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f9fafb; color: #222; }
-    header { background: #0366d6; color: white; padding: 12px 20px; }
-    h1 { margin: 0; font-size: 1.5em; }
-    .controls { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
-    input, select, button { padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; }
-    button { background: #0366d6; color: white; border: none; cursor: pointer; }
-    button:hover { background: #0252ad; }
-    main { padding: 16px 20px; }
-    #treeContainer details { margin-left: 15px; }
-    .file { margin-left: 20px; line-height: 1.6; }
-    footer { text-align: center; font-size: 13px; color: #555; margin: 20px 0; }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Arsip Digital</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f4f6f8;
+    color: #333;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: #0366d6;
+    color: white;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .logo-name {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-name img {
+    height: 60px;
+    width: auto;
+    border-radius: 8px;
+    background: white;
+    padding: 4px;
+  }
+
+  .instansi-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  .instansi-text .main {
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+
+  .instansi-text .sub {
+    font-size: 0.9em;
+  }
+
+  .controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .controls input, .controls select {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+  }
+
+  .controls input {
+    min-width: 200px;
+  }
+
+  .controls button {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    background: #0284c7;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .controls button:hover {
+    background: #0366d6;
+  }
+
+  main {
+    padding: 20px;
+  }
+
+  #treeContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  details {
+    background: white;
+    padding: 10px 12px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  details summary {
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1em;
+    outline: none;
+  }
+
+  .file {
+    margin-left: 20px;
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95em;
+  }
+
+  .file a {
+    color: #0366d6;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .file a:hover {
+    color: #014a91;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 13px;
+    color: #555;
+    margin: 20px 0;
+  }
+
+  /* Loading */
+  #loading {
+    font-style: italic;
+    color: #666;
+  }
+
+  /* Private file */
+  .private-file {
+    color: #999;
+    font-style: italic;
+  }
+
+  /* Responsive */
+  @media(max-width: 720px) {
+    header { flex-direction: column; align-items: flex-start; }
+    .controls { justify-content: flex-start; width: 100%; gap: 6px; }
+  }
+</style>
 </head>
 <body>
-  <header>
-    <h1>📁 Arsip Digital</h1>
-    <div class="controls">
-      <input id="search" placeholder="Cari nama file atau folder..." />
-      <select id="filterJenis"><option value="">Semua Jenis</option></select>
-      <button id="refresh">🔄 Muat Ulang</button>
+
+<header>
+  <div class="logo-name">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Lambang_Kota_Bau-Bau.png" alt="Logo Instansi">
+    <div class="instansi-text">
+      <div class="main">DINAS KESEHATAN KOTA BAUBAU</div>
+      <div class="sub">SUBBAGIAN PERENCANAAN, EVALUASI DAN PELAPORAN</div>
     </div>
-  </header>
+  </div>
 
-  <main>
-    <section id="treeContainer">
-      <!-- Loading ditaruh di sini agar bisa dibuat ulang setiap kali fetch -->
-      <div id="loading">Memuat katalog…</div>
-    </section>
-  </main>
+  <div class="controls">
+    <input id="search" placeholder="Cari nama file atau folder..." />
+    <select id="filterJenis"><option value="">Semua Jenis</option></select>
+    <button id="refresh">🔄 Muat Ulang</button>
+  </div>
+</header>
 
-  <footer>
-    <small>Diperbarui otomatis dari <code>data_arsip.json</code> — GitHub Pages</small>
-  </footer>
+<main>
+  <section id="treeContainer">
+    <div id="loading">Memuat katalog…</div>
+  </section>
+</main>
 
-  <script src="script.js"></script>
+<footer>
+  <small>Diperbarui otomatis dari <code>data_arsip.json</code> — GitHub Pages</small>
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
