@@ -1,29 +1,43 @@
 <!doctype html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Arsip Digital</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f9fafb; color: #222; }
+    header { background: #0366d6; color: white; padding: 12px 20px; }
+    h1 { margin: 0; font-size: 1.5em; }
+    .controls { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
+    input, select, button { padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; }
+    button { background: #0366d6; color: white; border: none; cursor: pointer; }
+    button:hover { background: #0252ad; }
+    main { padding: 16px 20px; }
+    #treeContainer details { margin-left: 15px; }
+    .file { margin-left: 20px; line-height: 1.6; }
+    footer { text-align: center; font-size: 13px; color: #555; margin: 20px 0; }
+  </style>
 </head>
 <body>
   <header>
-    <h1>Arsip Digital</h1>
+    <h1>📁 Arsip Digital</h1>
     <div class="controls">
       <input id="search" placeholder="Cari nama file atau folder..." />
       <select id="filterJenis"><option value="">Semua Jenis</option></select>
-      <button id="refresh">Refresh</button>
+      <button id="refresh">🔄 Muat Ulang</button>
     </div>
   </header>
 
   <main>
     <section id="treeContainer">
-      <p id="loading">Memuat katalog…</p>
+      <!-- Loading ditaruh di sini agar bisa dibuat ulang setiap kali fetch -->
+      <div id="loading">Memuat katalog…</div>
     </section>
   </main>
 
   <footer>
-    <small>Generated from <code>data_arsip.json</code></small>
+    <small>Diperbarui otomatis dari <code>data_arsip.json</code> — GitHub Pages</small>
   </footer>
 
   <script src="script.js"></script>
