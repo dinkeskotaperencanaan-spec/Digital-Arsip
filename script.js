@@ -6,7 +6,7 @@ let RAW = [];
 async function fetchData(){
   try {
     document.getElementById('loading').textContent = 'Memuat katalog…';
-    const res = await fetch(DATA_PATH, {cache: "no-store"});
+    const res = await fetch(DATA_PATH + '?v=' + Date.now(), { cache: "no-store" });
     if(!res.ok) throw new Error('Tidak bisa memuat data: ' + res.status);
     RAW = await res.json();
     render();
