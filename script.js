@@ -1,19 +1,20 @@
 // script.js - fetch data_arsip.json (assumes file at repo root)
 console.log("Script.js berhasil dimuat.");
 //const DATA_PATH = 'data_arsip.json'; // jika kamu taruh di folder, ubah pathnya
-const DATA_PATH = './data_arsip.json';
 let RAW = [];
+const DATA_PATH = './data_arsip.json'; // file di folder yang sama dengan index.html
 
 async function fetchData(){
   try {
     document.getElementById('loading').textContent = 'Memuat katalog…';
-    const res = await fetch(DATA_PATH + '?v=' + Date.now(), { cache: "no-store" });
+    const res = await fetch(DATA_PATH + '?v=' + Date.now(), {cache: "no-store"});
     if(!res.ok) throw new Error('Tidak bisa memuat data: ' + res.status);
     RAW = await res.json();
     render();
     populateJenis();
   } catch (e) {
-    document.getElementById('treeContainer').innerHTML = '<p style="color:red">Gagal memuat data_arsip.json — cek repo atau path.</p>';
+    document.getElementById('treeContainer').innerHTML =
+      '<p style="color:red">Gagal memuat data_arsip.json — cek repo atau path.</p>';
     console.error(e);
   }
 }
