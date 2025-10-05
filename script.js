@@ -6,7 +6,8 @@ const DATA_PATH = './data_arsip.json'; // file di folder yang sama dengan index.
 
 async function fetchData(){
   try {
-    document.getElementById('loading').textContent = 'Memuat katalog…';
+    //document.getElementById('loading').textContent = 'Memuat katalog…';
+    document.getElementById('loading')?.remove()
     const res = await fetch(DATA_PATH + '?v=' + Date.now(), {cache: "no-store"});
     if(!res.ok) throw new Error('Tidak bisa memuat data: ' + res.status);
     RAW = await res.json();
