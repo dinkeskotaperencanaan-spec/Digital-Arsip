@@ -1,7 +1,7 @@
 // script.js - fetch data_arsip.json (assumes file at repo root)
 console.log("Script.js berhasil dimuat.");
 
-/ Jalankan fetchData() hanya setelah seluruh HTML siap
+// Jalankan fetchData() hanya setelah seluruh HTML siap
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM siap, memulai fetch data...");
   fetchData();
