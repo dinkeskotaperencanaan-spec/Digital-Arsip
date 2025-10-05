@@ -16,7 +16,8 @@ async function fetchData() {
     const loadingEl = document.getElementById('loading');
     if (loadingEl) loadingEl.textContent = 'Memuat katalog…';
 
-    const res = await fetch(DATA_PATH + '?v=' + Date.now(), { cache: "no-store" });
+    //const res = await fetch(DATA_PATH + '?v=' + Date.now(), { cache: "no-store" });
+    const res = await fetch(DATA_PATH + '?v=' + new Date().getTime(), { cache: 'no-store' });
     if (!res.ok) throw new Error('Tidak bisa memuat data: ' + res.status);
     RAW = await res.json();
     render();
