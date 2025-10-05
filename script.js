@@ -2,7 +2,6 @@
 console.log("Script.js berhasil dimuat.");
 const DATA_PATH = 'data_arsip.json'; // jika kamu taruh di folder, ubah pathnya
 let RAW = [];
-const res = await fetch(DATA_PATH + '?v=' + Date.now(), { cache: "no-store" });
 
 async function fetchData(){
   try {
@@ -124,4 +123,5 @@ document.getElementById('search')?.addEventListener('input', () => applyFilters(
 document.getElementById('filterJenis')?.addEventListener('change', () => applyFilters());
 document.getElementById('refresh')?.addEventListener('click', () => fetchData());
 
+const res = await fetch(DATA_PATH + '?v=' + Date.now(), { cache: "no-store" });
 fetchData();
