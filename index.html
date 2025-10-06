@@ -147,6 +147,37 @@
   details summary::marker {
     color: #0366d6;
   }
+
+  /* Hilangkan underline, tambahkan efek hover bold */
+  a {
+    text-decoration: none;
+    transition: font-weight 0.2s, color 0.2s;
+  }
+  
+  /* Bold saat hover untuk nama dokumen dan download */
+  .doc-link:hover,
+  .download-link:hover {
+    font-weight: bold;
+    color: #014a91;
+  }
+  
+  /* Ikon folder dan file */
+  summary span {
+    font-size: 1.1em;
+    vertical-align: middle;
+  }
+  
+  .file span {
+    font-size: 1.1em;
+    vertical-align: middle;
+  }
+  
+  /* Sedikit spasi antar file */
+  .file {
+    margin-left: 20px;
+    padding: 4px 0;
+  }
+
   /* Hilangkan underline di seluruh link */
   a {
     text-decoration: none;
