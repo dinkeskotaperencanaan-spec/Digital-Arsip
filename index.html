@@ -113,7 +113,7 @@
 
   /* Tambahkan jarak di bawah folder utama */
   details:first-of-type {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
 
   /* Style untuk file item */
@@ -134,20 +134,26 @@
   }
 
   /* Link umum */
-  a {
-    color: #0366d6;
-    text-decoration: none;
-    transition: font-weight 0.2s, color 0.2s;
-  }
-
-  /* Warna khusus untuk link [Download] */
+  /* Efek hover halus untuk nama dokumen dan [Download] */
+  .doc-link,
   .download-link {
-    color: #d93025 !important;  /* merah khas Google Drive */
+    text-decoration: none;
+    transition: color 0.25s ease, transform 0.25s ease;
+    display: inline-block;
   }
   
+  .doc-link {
+    color: #0366d6; /* biru */
+  }
+  
+  .download-link {
+    color: #d93025 !important; /* merah */
+  }
+  
+  .doc-link:hover,
   .download-link:hover {
-    color: #a71d1a !important;  /* merah lebih gelap saat hover */
-    font-weight: bold;
+    transform: scale(1.05); /* efek zoom halus */
+    color: #014a91;          /* warna lebih gelap */
   }
 
   a:hover {
