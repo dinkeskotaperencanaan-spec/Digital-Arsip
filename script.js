@@ -1,13 +1,11 @@
-// script.js - render katalog arsip dalam bentuk pohon folder
-console.log("Script.js berhasil dimuat.");
+console.log("Script.js dengan ikon berhasil dimuat.");
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOM siap, memulai fetch data...");
   fetchData();
 });
 
 let RAW = [];
-const DATA_PATH = './data_arsip.json'; // pastikan file berada di lokasi yang sama
+const DATA_PATH = './data_arsip.json';
 
 async function fetchData() {
   try {
@@ -41,6 +39,22 @@ function buildTree(list) {
   return root;
 }
 
+function getFileIcon(filename) {
+  const ext = (filename.split('.').pop() || '').toLowerCase();
+  switch (ext) {
+    case 'pdf': return '📕';
+    case 'doc':
+    case 'docx': return '📘';
+    case 'xls':
+    case 'xlsx': return '📗';
+    case 'jpg':
+    case 'jpeg':
+    case 'png':
+    case 'gif': return '🖼️';
+    default: return '📄';
+  }
+}
+
 function renderTree() {
   const container = document.getElementById('treeContainer');
   if (!container) return;
@@ -57,13 +71,23 @@ function renderTree() {
   function createFolderElement(name, node, fullPath) {
     const details = document.createElement('details');
     const summary = document.createElement('summary');
-    summary.textContent = name;
+    const folderIcon = document.createElement('span');
+    folderIcon.textContent = '📁';
+    folderIcon.style.marginRight = '6px';
+    summary.prepend(folderIcon);
+    summary.append(name);
     details.appendChild(summary);
 
-    // buka otomatis jika berada di dalam "Digital Arsip Perencanaan"
-    if (fullPath.startsWith('Digital Arsip Perencanaan')) {
+    // Buka hanya untuk folder utama "Digital Arsip Perencanaan"
+    if (fullPath === 'Digital Arsip Perencanaan') {
       details.setAttribute('open', '');
+      folderIcon.textContent = '📂';
     }
+
+    // toggle icon folder saat expand/collapse
+    details.addEventListener('toggle', () => {
+      folderIcon.textContent = details.open ? '📂' : '📁';
+    });
 
     // render file
     if (node.__files__ && node.__files__.length > 0) {
@@ -73,13 +97,15 @@ function renderTree() {
 
         const displayName = file['Filename (Rename)'] || file['Original Name'] || 'file';
         const isPrivate = !file['Drive URL'] || file['Drive URL'].trim() === '';
+        const icon = getFileIcon(displayName);
 
-        // nama file
+        const iconSpan = document.createElement('span');
+        iconSpan.textContent = icon;
+        iconSpan.style.marginRight = '6px';
+
         const nameLink = document.createElement('a');
         nameLink.textContent = displayName;
-        nameLink.style.textDecoration = 'none'; // hilangkan underline
-        nameLink.style.color = '#0366d6';
-
+        nameLink.classList.add('doc-link');
         if (isPrivate) {
           nameLink.href = '#';
           nameLink.addEventListener('click', e => {
@@ -91,13 +117,9 @@ function renderTree() {
           nameLink.target = '_blank';
         }
 
-        // tombol download
         const dl = document.createElement('a');
         dl.textContent = ' [Download]';
-        dl.style.textDecoration = 'none'; // hilangkan underline
-        dl.style.marginLeft = '8px';
-        dl.style.color = '#d93025';
-        dl.style.cursor = 'pointer';
+        dl.classList.add('download-link');
 
         if (isPrivate) {
           dl.addEventListener('click', e => {
@@ -117,6 +139,7 @@ function renderTree() {
           dl.target = '_blank';
         }
 
+        fileDiv.appendChild(iconSpan);
         fileDiv.appendChild(nameLink);
         fileDiv.appendChild(dl);
         details.appendChild(fileDiv);
