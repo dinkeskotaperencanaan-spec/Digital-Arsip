@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchData();
 });
 
-//const DATA_PATH = 'data_arsip.json'; // jika kamu taruh di folder, ubah pathnya
 let RAW = [];
 const DATA_PATH = './data_arsip.json'; // file di folder yang sama dengan index.html
 
@@ -16,12 +15,13 @@ async function fetchData() {
     const loadingEl = document.getElementById('loading');
     if (loadingEl) loadingEl.textContent = 'Memuat katalog…';
 
-    //const res = await fetch(DATA_PATH + '?v=' + Date.now(), { cache: "no-store" });
     const res = await fetch(DATA_PATH + '?v=' + new Date().getTime(), { cache: 'no-store' });
     if (!res.ok) throw new Error('Tidak bisa memuat data: ' + res.status);
     RAW = await res.json();
-    render();
+
     populateJenis();
+    renderTreeView(RAW);
+
   } catch (e) {
     const container = document.getElementById('treeContainer');
     container.innerHTML = '<p style="color:red">Gagal memuat data_arsip.json — cek repo atau path.</p>';
@@ -29,69 +29,56 @@ async function fetchData() {
   }
 }
 
-function buildTree(list){
-  // Convert flat list with folderPath into nested object
-  const root = {};
-  (list || []).forEach(item => {
-    const path = (item.FolderPath || item.folderPath || item.folderpath || '').trim() || 'Uncategorized';
-    const parts = path.split('/').filter(Boolean);
-    let node = root;
-    parts.forEach(p => {
-      node[p] = node[p] || { __folders__: {}, __files__: [] };
-      node = node[p].__folders__;
+/* ============================================================
+   🔹 1. Bangun Struktur Folder Tree dari FolderPath
+   ============================================================ */
+function buildFolderTree(data) {
+  const tree = {};
+
+  data.forEach(file => {
+    const pathParts = (file['FolderPath'] || '').split('/').filter(Boolean);
+    let current = tree;
+
+    pathParts.forEach((part, index) => {
+      if (!current[part]) current[part] = { __files: [] };
+      if (index === pathParts.length - 1) {
+        current[part].__files.push(file);
+      }
+      current = current[part];
     });
-    // go back to parent container for files array
-    // we need to store files at the leaf; find leaf object
-    let leaf = root;
-    parts.forEach(p => { leaf = leaf[p].__folders__ ? leaf[p] : leaf[p]; });
-    // simpler: traverse again to get container
-    let container = root;
-    parts.forEach(p => container = container[p]);
-    container.__files__ = container.__files__ || [];
-    container.__files__.push(item);
   });
-  return root;
+
+  return tree;
 }
 
-function render() {
-  const container = document.getElementById('treeContainer');
-  if (!container) return;
+/* ============================================================
+   🔹 2. Render Pohon Folder ke HTML (Tree View)
+   ============================================================ */
+function renderTree(tree, container) {
+  Object.keys(tree).forEach(key => {
+    if (key === '__files') return;
 
-  const loadingEl = document.getElementById('loading');
-  if (loadingEl) loadingEl.remove(); // hapus teks loading
+    const folderEl = document.createElement('details');
+    const title = document.createElement('summary');
+    title.textContent = '📁 ' + key;
+    folderEl.appendChild(title);
 
-  container.innerHTML = '';
-  if (!RAW || RAW.length === 0) {
-    container.innerHTML = '<p>Tidak ada dokumen.</p>';
-    return;
-  }
+    const content = document.createElement('div');
+    content.classList.add('folder-content');
 
-  // Group berdasarkan folder terakhir dari FolderPath
-  const grouped = {};
-  RAW.forEach(item => {
-    const fullPath = (item.FolderPath || '').trim() || '(root)';
-    const parts = fullPath.split('/').filter(Boolean);
-    const folderName = parts.length ? parts[parts.length - 1] : '(root)';
-    (grouped[folderName] = grouped[folderName] || []).push(item);
-  });
+    // render subfolder
+    renderTree(tree[key], content);
 
-  // Urutkan folder dan render
-  Object.keys(grouped).sort().forEach(folderName => {
-    const details = document.createElement('details');
-    const summary = document.createElement('summary');
-    summary.textContent = folderName || '(root)';
-    details.appendChild(summary);
-
-    const ul = document.createElement('div');
-
-    grouped[folderName].forEach(file => {
-      const d = document.createElement('div');
-      d.className = 'file';
+    // render file di folder ini
+    const files = tree[key].__files || [];
+    files.forEach(file => {
+      const fileEl = document.createElement('div');
+      fileEl.classList.add('file-item');
 
       const displayName = file['Filename (Rename)'] || file['Original Name'] || 'file';
       const isPrivate = !file['Drive URL'] || file['Drive URL'].trim() === '';
 
-      // Nama file clickable
+      // link view dokumen
       const nameLink = document.createElement('a');
       nameLink.textContent = displayName;
       if (isPrivate) {
@@ -104,82 +91,98 @@ function render() {
         nameLink.href = file['Drive URL'];
         nameLink.target = '_blank';
       }
-      d.appendChild(nameLink);
 
-      // Tambahkan tombol [Download]
-      // Tambahkan tombol [Download]
+      // tombol download
       const dl = document.createElement('a');
       dl.textContent = ' [Download]';
+      dl.style.color = '#d93025';
       dl.style.marginLeft = '8px';
-      dl.style.color = '#d93025'; // merah
-      dl.style.cursor = 'pointer';
-      
+
       if (isPrivate) {
         dl.addEventListener('click', e => {
           e.preventDefault();
           alert("🔒 Dokumen Internal, Hubungi Admin!");
         });
       } else {
-        // ubah link view menjadi link download
-        let viewUrl = file['Drive URL'];
-        // ekstrak fileId dari link view
-        const match = viewUrl.match(/\/d\/([a-zA-Z0-9_-]+)\//);
+        const match = file['Drive URL'].match(/\/d\/([a-zA-Z0-9_-]+)\//);
         if (match && match[1]) {
           const fileId = match[1];
-          const downloadUrl = `https://drive.usercontent.google.com/u/0/uc?id=${fileId}&export=download`;
-          dl.href = downloadUrl;
+          dl.href = `https://drive.usercontent.google.com/u/0/uc?id=${fileId}&export=download`;
           dl.setAttribute('download', displayName);
+          dl.target = '_blank';
         } else {
-          // fallback jika link tak sesuai format
-          dl.href = viewUrl;
+          dl.href = file['Drive URL'];
+          dl.target = '_blank';
         }
-        dl.target = '_blank';
       }
-      
-      d.appendChild(dl);
-      ul.appendChild(d);
+
+      fileEl.appendChild(nameLink);
+      fileEl.appendChild(dl);
+      content.appendChild(fileEl);
     });
 
-    details.appendChild(ul);
-    container.appendChild(details);
+    folderEl.appendChild(content);
+    container.appendChild(folderEl);
   });
 }
 
-function populateJenis(){
+/* ============================================================
+   🔹 3. Render Pohon Secara Utuh
+   ============================================================ */
+function renderTreeView(data) {
+  const container = document.getElementById('treeContainer');
+  if (!container) return;
+
+  const loadingEl = document.getElementById('loading');
+  if (loadingEl) loadingEl.remove();
+
+  container.innerHTML = '';
+  if (!data || data.length === 0) {
+    container.innerHTML = '<p>Tidak ada dokumen.</p>';
+    return;
+  }
+
+  const tree = buildFolderTree(data);
+  renderTree(tree, container);
+}
+
+/* ============================================================
+   🔹 4. Filter Jenis Dokumen dan Pencarian
+   ============================================================ */
+function populateJenis() {
   const select = document.getElementById('filterJenis');
   const set = new Set();
   RAW.forEach(r => {
-    const j = r['Jenis Dokumen'] || r.jenis || '';
-    if(j) set.add(j);
+    const j = r['Jenis Dokumen'] || '';
+    if (j) set.add(j);
   });
-  // clear but keep first default
+
   select.innerHTML = '<option value="">Semua Jenis</option>';
   Array.from(set).sort().forEach(v => {
-    const o = document.createElement('option'); o.value = v; o.textContent = v; select.appendChild(o);
+    const o = document.createElement('option');
+    o.value = v;
+    o.textContent = v;
+    select.appendChild(o);
   });
 }
 
-function applyFilters(){
+function applyFilters() {
   const q = document.getElementById('search').value.toLowerCase().trim();
   const jenis = document.getElementById('filterJenis').value;
   const filtered = RAW.filter(r => {
-    const title = (r['Filename (Rename)']||r.filename||r.name||'').toString().toLowerCase();
-    const path = (r.FolderPath||r.folderPath||'').toString().toLowerCase();
-    const j = (r['Jenis Dokumen']||r.jenis||'').toString();
+    const title = (r['Filename (Rename)'] || '').toLowerCase();
+    const path = (r.FolderPath || '').toLowerCase();
+    const j = (r['Jenis Dokumen'] || '').toString();
     const matchQ = !q || title.includes(q) || path.includes(q);
     const matchJ = !jenis || j === jenis;
     return matchQ && matchJ;
   });
-  // temporarily override rendering by replacing RAW
-  const old = RAW;
-  RAW = filtered;
-  render();
-  RAW = old;
+  renderTreeView(filtered);
 }
 
+/* ============================================================
+   🔹 5. Event Listener
+   ============================================================ */
 document.getElementById('search')?.addEventListener('input', () => applyFilters());
 document.getElementById('filterJenis')?.addEventListener('change', () => applyFilters());
 document.getElementById('refresh')?.addEventListener('click', () => fetchData());
-
-// const res = await fetch(DATA_PATH + '?v=' + Date.now(), { cache: "no-store" });
-//fetchData();
