@@ -107,23 +107,36 @@ function render() {
       d.appendChild(nameLink);
 
       // Tambahkan tombol [Download]
+      // Tambahkan tombol [Download]
       const dl = document.createElement('a');
       dl.textContent = ' [Download]';
       dl.style.marginLeft = '8px';
-      dl.style.color = '#0366d6';
+      dl.style.color = '#d93025'; // merah
       dl.style.cursor = 'pointer';
+      
       if (isPrivate) {
         dl.addEventListener('click', e => {
           e.preventDefault();
           alert("🔒 Dokumen Internal, Hubungi Admin!");
         });
       } else {
-        dl.href = file['Drive URL'];
+        // ubah link view menjadi link download
+        let viewUrl = file['Drive URL'];
+        // ekstrak fileId dari link view
+        const match = viewUrl.match(/\/d\/([a-zA-Z0-9_-]+)\//);
+        if (match && match[1]) {
+          const fileId = match[1];
+          const downloadUrl = `https://drive.usercontent.google.com/u/0/uc?id=${fileId}&export=download`;
+          dl.href = downloadUrl;
+          dl.setAttribute('download', displayName);
+        } else {
+          // fallback jika link tak sesuai format
+          dl.href = viewUrl;
+        }
         dl.target = '_blank';
-        dl.setAttribute('download', displayName);
       }
+      
       d.appendChild(dl);
-
       ul.appendChild(d);
     });
 
