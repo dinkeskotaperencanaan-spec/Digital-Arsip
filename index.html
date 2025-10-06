@@ -110,10 +110,17 @@
     font-size: 1em;
     outline: none;
   }
+  
+  /* Tambahkan jarak antara nama folder utama dan subfolder di dalamnya */
+  details[open] > summary::after {
+    display: block;
+    content: "";
+    margin-bottom: 10px;
+  }
 
   /* Tambahkan jarak di bawah folder utama */
   details:first-of-type {
-    margin-bottom: 10px;
+    margin-bottom: 0px;
   }
 
   /* Style untuk file item */
