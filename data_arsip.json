@@ -156,15 +156,51 @@
     "SHA / GitHub Path": ""
   },
   {
-    "No": 14,
+    "No": "",
     "Filename (Rename)": "Laporan_dalamairku_2021.png",
-    "Original Name": "Cuplikan layar 2025-07-08 104800.png",
+    "Original Name": "",
     "FolderPath": "Digital Arsip Perencanaan/Perencanaan/RENSTRA",
+    "Jenis Dokumen": "",
+    "Tahun": "",
+    "Keterangan": "",
+    "Drive URL": "https://drive.google.com/file/d/1FQN13FVf6tXMnHRENu4tkuLPSgBrf90n/view?usp=drivesdk",
+    "Upload Date": "2025-10-06T17:02:56.126Z",
+    "SHA / GitHub Path": ""
+  },
+  {
+    "No": 15,
+    "Filename (Rename)": "Laporan_LAKIP_2021.pdf",
+    "Original Name": "LAKIP DINKES TA. 2024.pdf",
+    "FolderPath": "Digital Arsip Perencanaan/Surat Masuk",
     "Jenis Dokumen": "Laporan",
     "Tahun": 2021,
-    "Keterangan": "dalamairku",
-    "Drive URL": "https://drive.google.com/file/d/1FQN13FVf6tXMnHRENu4tkuLPSgBrf90n/view?usp=drivesdk",
-    "Upload Date": "2025-10-06T17:02:58.800Z",
+    "Keterangan": "LAKIP",
+    "Drive URL": "https://drive.google.com/file/d/1B7KCdLthzHbxQfiHse3MmN6QDGHDnCqA/view?usp=drivesdk",
+    "Upload Date": "2025-10-07T00:25:07.243Z",
+    "SHA / GitHub Path": ""
+  },
+  {
+    "No": 16,
+    "Filename (Rename)": "Dokumen__.pdf",
+    "Original Name": "LAKIP DINKES 2022.pdf",
+    "FolderPath": "Digital Arsip Perencanaan",
+    "Jenis Dokumen": "",
+    "Tahun": "",
+    "Keterangan": "",
+    "Drive URL": "https://drive.google.com/file/d/1FJNTeCMcVCrqftN6y8DyyqTVicoGW0Uf/view?usp=drivesdk",
+    "Upload Date": "2025-10-07T00:27:57.684Z",
+    "SHA / GitHub Path": ""
+  },
+  {
+    "No": 17,
+    "Filename (Rename)": "Surat_renja_2020-2021.xlsx",
+    "Original Name": "Cetak Renja.xlsx",
+    "FolderPath": "Digital Arsip Perencanaan/Perencanaan/RPJMD",
+    "Jenis Dokumen": "Surat",
+    "Tahun": "2020-2021",
+    "Keterangan": "renja",
+    "Drive URL": "https://docs.google.com/spreadsheets/d/17C8Yzho7X2ktxGBYcqriMHgaRjpYm4KM/edit?usp=drivesdk&ouid=109273445742409006830&rtpof=true&sd=true",
+    "Upload Date": "2025-10-07T14:28:55.548Z",
     "SHA / GitHub Path": ""
   }
 ]
