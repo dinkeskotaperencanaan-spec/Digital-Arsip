@@ -37,6 +37,18 @@
   },
   {
     "No": "",
+    "Filename (Rename)": "Laporan_LAKIP_2021.pdf",
+    "Original Name": "",
+    "FolderPath": "Digital Arsip Perencanaan/Surat Masuk",
+    "Jenis Dokumen": "",
+    "Tahun": "",
+    "Keterangan": "",
+    "Drive URL": "https://drive.google.com/file/d/1B7KCdLthzHbxQfiHse3MmN6QDGHDnCqA/view?usp=drivesdk",
+    "Upload Date": "2025-10-07T00:25:05.506Z",
+    "SHA / GitHub Path": ""
+  },
+  {
+    "No": "",
     "Filename (Rename)": "Draft_kotak_ajaib_2025.png",
     "Original Name": "",
     "FolderPath": "Digital Arsip Perencanaan/Surat Masuk",
@@ -168,39 +180,15 @@
     "SHA / GitHub Path": ""
   },
   {
-    "No": 15,
-    "Filename (Rename)": "Laporan_LAKIP_2021.pdf",
-    "Original Name": "LAKIP DINKES TA. 2024.pdf",
-    "FolderPath": "Digital Arsip Perencanaan/Surat Masuk",
-    "Jenis Dokumen": "Laporan",
-    "Tahun": 2021,
-    "Keterangan": "LAKIP",
-    "Drive URL": "https://drive.google.com/file/d/1B7KCdLthzHbxQfiHse3MmN6QDGHDnCqA/view?usp=drivesdk",
-    "Upload Date": "2025-10-07T00:25:07.243Z",
-    "SHA / GitHub Path": ""
-  },
-  {
     "No": 16,
-    "Filename (Rename)": "Dokumen__.pdf",
-    "Original Name": "LAKIP DINKES 2022.pdf",
-    "FolderPath": "Digital Arsip Perencanaan",
-    "Jenis Dokumen": "",
-    "Tahun": "",
-    "Keterangan": "",
-    "Drive URL": "https://drive.google.com/file/d/1FJNTeCMcVCrqftN6y8DyyqTVicoGW0Uf/view?usp=drivesdk",
-    "Upload Date": "2025-10-07T00:27:57.684Z",
-    "SHA / GitHub Path": ""
-  },
-  {
-    "No": 17,
-    "Filename (Rename)": "Surat_renja_2020-2021.xlsx",
-    "Original Name": "Cetak Renja.xlsx",
-    "FolderPath": "Digital Arsip Perencanaan/Perencanaan/RPJMD",
-    "Jenis Dokumen": "Surat",
-    "Tahun": "2020-2021",
-    "Keterangan": "renja",
-    "Drive URL": "https://docs.google.com/spreadsheets/d/17C8Yzho7X2ktxGBYcqriMHgaRjpYm4KM/edit?usp=drivesdk&ouid=109273445742409006830&rtpof=true&sd=true",
-    "Upload Date": "2025-10-07T14:28:55.548Z",
+    "Filename (Rename)": "Laporan_renstra_2024-2026.docx",
+    "Original Name": "LAKIP DINKES TA. 2024_removed.docx",
+    "FolderPath": "Digital Arsip Perencanaan/Perencanaan/RENSTRA",
+    "Jenis Dokumen": "Laporan",
+    "Tahun": "2024-2026",
+    "Keterangan": "renstra",
+    "Drive URL": "https://docs.google.com/document/d/1AjJIFhbwEyf5W7rThwGkT_x4JoH_XaCc/edit?usp=drivesdk&ouid=109273445742409006830&rtpof=true&sd=true",
+    "Upload Date": "2025-10-07T14:38:12.106Z",
     "SHA / GitHub Path": ""
   }
 ]
