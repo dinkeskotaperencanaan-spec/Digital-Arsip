@@ -110,7 +110,12 @@ function renderTree() {
           nameLink.href = '#';
           nameLink.addEventListener('click', e => {
             e.preventDefault();
-            alert('🔒 Dokumen Internal, Hubungi Admin!');
+            Swal.fire({
+              icon: 'info',
+              title: 'Dokumen Internal',
+              text: 'Hubungi admin untuk mendapatkan akses.',
+              confirmButtonColor: '#3085d6'
+            });
           });
         } else {
           nameLink.href = file['Drive URL'];
@@ -124,7 +129,12 @@ function renderTree() {
         if (isPrivate) {
           dl.addEventListener('click', e => {
             e.preventDefault();
-            alert('🔒 Dokumen Internal, Hubungi Admin!');
+          Swal.fire({
+            icon: 'info',
+            title: 'Dokumen Internal',
+            text: 'Hubungi admin untuk mendapatkan akses.',
+            confirmButtonColor: '#3085d6'
+          });
           });
         } else {
           const match = file['Drive URL'].match(/\/d\/([a-zA-Z0-9_-]+)\//);
@@ -235,7 +245,12 @@ async function kirimFeedback() {
   const kebutuhan = document.getElementById('kebutuhan').value;
   const keterangan = document.getElementById('keterangan').value;
   if (!nama || !instansi || !kebutuhan || selectedRating === 0) {
-    alert("Mohon lengkapi semua kolom dan pilih rating bintang.");
+    Swal.fire({
+      icon: 'warning',
+      title: 'Data Belum Lengkap',
+      text: 'Mohon lengkapi semua kolom dan pilih rating bintang.',
+      confirmButtonColor: '#3085d6'
+    });
     return;
   }
   await fetch("https://script.google.com/macros/s/AKfycbzF85StRcg7I1zREG32q15lbjPHEDcRR9wTbWPH_7WZSrNsGf59qefpdjTOgp1enQWq/exec", { // 🔗 Ganti URL Apps Script di sini
@@ -250,6 +265,11 @@ async function kirimFeedback() {
       rating: selectedRating 
     })
   });
-  alert("Terima kasih atas ulasan Anda!");
+  Swal.fire({
+    icon: 'success',
+    title: 'Terima Kasih!',
+    text: 'Ulasan Anda telah dikirim ke Dinas Kesehatan Kota Baubau.',
+    confirmButtonColor: '#3085d6'
+  });
   tutupPopup();
 }
