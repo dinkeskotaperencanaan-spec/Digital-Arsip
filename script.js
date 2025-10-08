@@ -238,7 +238,7 @@ async function kirimFeedback() {
     alert("Mohon lengkapi semua kolom dan pilih rating bintang.");
     return;
   }
-  await fetch("https://script.google.com/macros/s/AKfycbyxxxxxxx/exec", { // 🔗 Ganti URL Apps Script di sini
+  await fetch("https://script.google.com/macros/s/AKfycbzF85StRcg7I1zREG32q15lbjPHEDcRR9wTbWPH_7WZSrNsGf59qefpdjTOgp1enQWq/exec", { // 🔗 Ganti URL Apps Script di sini
     method: "POST",
     mode: "no-cors",
     headers: { "Content-Type": "application/json" },
