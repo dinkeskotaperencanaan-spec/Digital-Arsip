@@ -201,3 +201,55 @@ function applyFilters() {
 document.getElementById('search')?.addEventListener('input', () => applyFilters());
 document.getElementById('filterJenis')?.addEventListener('change', () => applyFilters());
 document.getElementById('refresh')?.addEventListener('click', () => fetchData());
+
+// Pop-up logic
+const popup = document.getElementById('feedbackPopup');
+const openBtn = document.getElementById('openFeedbackBtn');
+const stars = document.querySelectorAll('.star');
+let selectedRating = 0;
+
+// Buka pop-up
+openBtn.onclick = () => popup.style.display = 'flex';
+// Tutup pop-up
+function tutupPopup() {
+  popup.style.display = 'none';
+}
+// Efek bintang interaktif
+stars.forEach(star => {
+  star.addEventListener('mouseover', () => {
+    stars.forEach(s => s.classList.remove('hover'));
+    for (let i = 0; i < star.dataset.value; i++) stars[i].classList.add('hover');
+  });
+  star.addEventListener('mouseout', () => stars.forEach(s => s.classList.remove('hover')));
+  star.addEventListener('click', () => {
+    selectedRating = star.dataset.value;
+    stars.forEach(s => s.classList.remove('selected'));
+    for (let i = 0; i < selectedRating; i++) stars[i].classList.add('selected');
+  });
+});
+
+// Kirim ke Google Sheet
+async function kirimFeedback() {
+  const nama = document.getElementById('nama').value;
+  const instansi = document.getElementById('instansi').value;
+  const kebutuhan = document.getElementById('kebutuhan').value;
+  const keterangan = document.getElementById('keterangan').value;
+  if (!nama || !instansi || !kebutuhan || selectedRating === 0) {
+    alert("Mohon lengkapi semua kolom dan pilih rating bintang.");
+    return;
+  }
+  await fetch("https://script.google.com/macros/s/AKfycbyxxxxxxx/exec", { // 🔗 Ganti URL Apps Script di sini
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      nama, 
+      instansi, 
+      kebutuhan, 
+      keterangan, 
+      rating: selectedRating 
+    })
+  });
+  alert("Terima kasih atas ulasan Anda!");
+  tutupPopup();
+}
