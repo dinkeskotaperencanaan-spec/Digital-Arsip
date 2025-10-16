@@ -4,14 +4,157 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Arsip Digital</title>
-  <link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+
 <style>
+  /* ================== */
+  /* --- Tampilan Buku --- */
+  /* ================== */
+  .splash-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #007bff, #00c6ff);
+    color: white;
+    z-index: 9999;
+    transition: opacity 1s ease;
+  }
+  .splash-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .book {
+    position: relative;
+    width: 180px;
+    height: 260px;
+    perspective: 1200px;
+    cursor: pointer;
+  }
+  .book-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 1s ease;
+  }
+  .book:hover .book-inner {
+    transform: rotateY(-25deg);
+  }
+
+  .spine {
+    position: absolute;
+    left: 0;
+    width: 15px;
+    height: 100%;
+    background: linear-gradient(180deg, #003f8c, #0056b3);
+    border-radius: 4px 0 0 4px;
+    box-shadow: inset -2px 0 5px rgba(0,0,0,0.3);
+  }
+
+  .pages {
+    position: absolute;
+    left: 15px;
+    width: calc(100% - 15px);
+    height: 100%;
+    background: linear-gradient(to right, #fff 0%, #f4f4f4 100%);
+    border-radius: 0 6px 6px 0;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.15);
+  }
+
+  .page-left, .page-right {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, #fff 0%, #f1f1f1 100%);
+  }
+  .page-left { left: 0; border-right: 1px solid #ddd; }
+  .page-right { right: 0; border-left: 1px solid #ddd; }
+
+  .cover {
+    position: absolute;
+    inset: 0;
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    transition: transform 1s ease;
+  }
+
+  .cover-front, .cover-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    backface-visibility: hidden;
+    overflow: hidden;
+  }
+
+  .cover-front {
+    background-image: url('https://drive.google.com/file/d/1aWUGxLgt3JEO7aV87thyAalvM1T8_z48/view?usp=sharing'); /* 👉 Ganti dengan nama atau URL gambar cover kamu */
+    background-size: cover;
+    background-position: center;
+    border: 3px solid #003366;
+    border-radius: 6px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    z-index: 2;
+  }
+
+  .cover-front .cover-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: white;
+  }
+  .cover-front img {
+    width: 90px;
+    margin-bottom: 12px;
+  }
+  .cover-front h3 {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .cover-back {
+    background: white;
+    transform: rotateY(180deg);
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.2);
+  }
+
+  .book:hover .cover {
+    transform: rotateY(-140deg);
+  }
+
+  .splash-title {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+  }
+
+  /* ================== */
+  /* --- Katalog Utama --- */
+  /* ================== */
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
     background: #f4f6f8;
     color: #333;
+  }
+  header, main, footer {
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+  .show-content header,
+  .show-content main,
+  .show-content footer {
+    opacity: 1;
   }
 
   header {
@@ -69,10 +212,6 @@
     font-size: 14px;
   }
 
-  .controls input {
-    min-width: 200px;
-  }
-
   .controls button {
     padding: 6px 12px;
     border-radius: 6px;
@@ -88,14 +227,7 @@
   }
 
   main {
-    padding:  20px 20px 0 20px;
-    margin-bottom: 0px;
-  }
-
-  #treeContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    padding: 20px;
   }
 
   details {
@@ -105,68 +237,9 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
 
-  details summary {
+  summary {
     font-weight: bold;
     cursor: pointer;
-    font-size: 1em;
-    outline: none;
-  }
-  
-  /* Tambahkan jarak antara nama folder utama dan subfolder di dalamnya */
-  details[open] > summary::after {
-    display: block;
-    content: "";
-    margin-bottom: 10px;
-  }
-
-  /* Tambahkan jarak di bawah folder utama */
-  details:first-of-type {
-    margin-bottom: 0px;
-  }
-
-  /* Style untuk file item */
-  .file {
-    margin-left: 20px;
-    padding: 4px 0;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.95em;
-  }
-
-  /* Ikon folder dan file */
-  summary span,
-  .file span {
-    font-size: 1.1em;
-    vertical-align: middle;
-  }
-
-  /* Link umum */
-  /* Efek hover halus untuk nama dokumen dan [Download] */
-  .doc-link,
-  .download-link {
-    text-decoration: none;
-    transition: color 0.25s ease, transform 0.25s ease;
-    display: inline-block;
-  }
-  
-  .doc-link {
-    color: #0366d6; /* biru */
-  }
-  
-  .download-link {
-    color: #d93025 !important; /* merah */
-  }
-  
-  .doc-link:hover,
-  .download-link:hover {
-    transform: scale(1.05); /* efek zoom halus */
-    color: #014a91;          /* warna lebih gelap */
-  }
-
-  a:hover {
-    font-weight: bold;
-    color: #014a91;
   }
 
   footer {
@@ -176,63 +249,41 @@
     margin: 20px 0;
   }
 
-  .folder-content {
-    margin-left: 20px;
-  }
-
-  details summary::marker {
-    color: #0366d6;
-  }
-
-  /* Loading */
-  #loading {
-    font-style: italic;
-    color: #666;
-  }
-
-  /* Private file */
-  .private-file {
-    color: #999;
-    font-style: italic;
-  }
-
-  .star {
-    font-size: 25px;
-    cursor: pointer;
-    color: #ccc;
-    transition: color 0.2s;
-  }
-  .star.hover, .star.selected {
-    color: #facc15;
-  }
-  
-  .swal2-container {
-    z-index: 20000 !important;
-  }
-
-  /* Responsive */
   @media(max-width: 720px) {
-    header { 
-      flex-direction: column; 
-      align-items: flex-start; 
-    }
-    .controls { 
-      justify-content: flex-start; 
-      width: 100%; 
-      gap: 6px; 
-    }
+    header { flex-direction: column; align-items: flex-start; }
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
+
+<!-- Tampilan Pembuka (Splash) -->
+<div class="splash-screen" id="splash">
+  <div class="book" id="book">
+    <div class="book-inner">
+      <div class="spine"></div>
+      <div class="pages">
+        <div class="page-left"></div>
+        <div class="page-right"></div>
+      </div>
+      <div class="cover">
+	<div class="cover-front"></div>
+        <div class="cover-back"></div>
+      </div>
+    </div>
+  </div>
+  <div class="splash-title">
+    DIGITAL ARSIP PERENCANAAN<br>DINAS KESEHATAN KOTA BAUBAU
+  </div>
+</div>
+
+<!-- Dashboard Katalog -->
 <header>
   <div class="logo-name">
     <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Lambang_Kota_Bau-Bau.png" alt="Logo Instansi">
     <div class="instansi-text">
-      <div style="width:100%; margin-bottom:8px;">
-        <h2 style="margin:0; font-size:1.5em; font-weight:bold;">ARSIP DIGITAL</h2>
-      </div>
+      <h2 style="margin:0;">ARSIP DIGITAL</h2>
       <div class="main">DINAS KESEHATAN KOTA BAUBAU</div>
       <div class="sub">SUBBAGIAN PERENCANAAN, EVALUASI DAN PELAPORAN</div>
     </div>
@@ -252,46 +303,22 @@
 </main>
 
 <footer>
-  <div style="text-align:center; margin-top:0px;">
-    <button id="openFeedbackBtn" 
-            style="background:#2563eb; color:white; padding:10px 20px; border:none; border-radius:10px; cursor:pointer;">
-      ⭐ Beri Ulasan
-    </button>
-  </div>
-  
-  <!-- Pop-up Form -->
-  <div id="feedbackPopup" 
-       style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-              background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
-    <div style="background:white; padding:30px; border-radius:15px; width:90%; max-width:400px; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,0.2);">
-      <h3 style="margin-bottom:15px;">Beri Ulasan Anda</h3>
-      
-      <input id="nama" placeholder="Nama" style="width:100%; margin-bottom:10px; padding:8px;"><br>
-      <input id="instansi" placeholder="Instansi" style="width:100%; margin-bottom:10px; padding:8px;"><br>
-      <input id="kebutuhan" placeholder="Kebutuhan" style="width:100%; margin-bottom:10px; padding:8px;"><br>
-      <textarea id="keterangan" placeholder="Keterangan (opsional)" style="width:100%; height:60px; padding:8px; margin-bottom:10px;"></textarea><br>
-  
-      <!-- Rating bintang -->
-      <div id="ratingStars" style="margin-bottom:15px;">
-        <span class="star" data-value="1">★</span>
-        <span class="star" data-value="2">★</span>
-        <span class="star" data-value="3">★</span>
-        <span class="star" data-value="4">★</span>
-        <span class="star" data-value="5">★</span>
-      </div>
-  
-      <button onclick="kirimFeedback()" 
-              style="background:#16a34a; color:white; padding:10px 20px; border:none; border-radius:10px; cursor:pointer;">
-        Kirim
-      </button>
-      <button onclick="tutupPopup()" 
-              style="background:#dc2626; color:white; padding:10px 20px; border:none; border-radius:10px; margin-left:5px; cursor:pointer;">
-        Batal
-      </button>
-    </div>
-  </div>
-  <small>Diperbarui otomatis dari <code>data_arsip.json</code> — GitHub Pages</small>
+  <small>Diperbarui otomatis dari <code>data_arsip.json</code></small>
 </footer>
+
+<script>
+const splash = document.getElementById('splash');
+const book = document.getElementById('book');
+
+// saat klik buku, tampilkan dashboard
+book.addEventListener('click', () => {
+  splash.classList.add('hidden');
+  setTimeout(() => {
+    splash.remove();
+    document.body.classList.add('show-content');
+  }, 1000);
+});
+</script>
 
 <script src="script.js"></script>
 </body>
