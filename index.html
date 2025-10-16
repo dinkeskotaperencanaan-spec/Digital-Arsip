@@ -454,22 +454,18 @@
   <small>Diperbarui otomatis dari <code>data_arsip.json</code> — GitHub Pages</small>
 </footer>
 <script>
-  const book = document.getElementById('book');
-
-  book.addEventListener('click', () => {
-    book.classList.toggle('open'); // buka/tutup saat diklik
-  });
-	
 const splash = document.getElementById('splash');
 const book = document.getElementById('book');
 
 // saat klik buku, tampilkan dashboard
 book.addEventListener('click', () => {
-  splash.classList.add('hidden');
+	book.classList.add('open');
+
   setTimeout(() => {
+	  splash.classList.add('hidden');
     splash.remove();
     document.body.classList.add('show-content');
-  }, 1000);
+  }, 2000);
 });
 </script>
 <script src="script.js"></script>
