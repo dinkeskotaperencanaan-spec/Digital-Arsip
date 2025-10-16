@@ -41,9 +41,18 @@
     transform-style: preserve-3d;
     transition: transform 1s ease;
   }
-  .book:hover .book-inner {
+  .book.open .book-inner {
     transform: rotateY(-25deg);
   }
+
+	.book {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.book:active {
+  transform: scale(0.98);
+}
 
   .spine {
     position: absolute;
@@ -445,6 +454,12 @@
   <small>Diperbarui otomatis dari <code>data_arsip.json</code> — GitHub Pages</small>
 </footer>
 <script>
+  const book = document.getElementById('book');
+
+  book.addEventListener('click', () => {
+    book.classList.toggle('open'); // buka/tutup saat diklik
+  });
+	
 const splash = document.getElementById('splash');
 const book = document.getElementById('book');
 
