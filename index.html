@@ -448,7 +448,19 @@
   </div>
   <small>Diperbarui otomatis dari <code>data_arsip.json</code> — GitHub Pages</small>
 </footer>
+<script>
+const splash = document.getElementById('splash');
+const book = document.getElementById('book');
 
+// saat klik buku, tampilkan dashboard
+book.addEventListener('click', () => {
+  splash.classList.add('hidden');
+  setTimeout(() => {
+    splash.remove();
+    document.body.classList.add('show-content');
+  }, 1000);
+});
+</script>
 <script src="script.js"></script>
 </body>
 </html>
