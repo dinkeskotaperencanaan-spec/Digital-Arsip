@@ -17,9 +17,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #007bff, #00c6ff);
+    background: linear-gradient(135deg, #89f7fe, #007bff); /* 🌊 gradasi biru langit ke biru laut */
     color: white;
     z-index: 9999;
+    overflow: hidden;
     transition: opacity 1s ease;
   }
   .splash-screen.hidden {
@@ -27,111 +28,16 @@
     pointer-events: none;
   }
 
-  .book {
-    position: relative;
-    width: 300px;
-    height: 460px;
-    perspective: 1200px;
+  /* Logo & efek hover */
+  .logo {
+    width: 250px;
+    height: 250px;
+    transition: transform 0.6s ease;
     cursor: pointer;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
   }
-  .book-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transform-style: preserve-3d;
-    transition: transform 1s ease;
-  }
-  .book.open .book-inner {
-    transform: rotateY(-25deg);
-  }
-
-	.book {
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.book:active {
-  transform: scale(0.98);
-}
-
-  .spine {
-    position: absolute;
-    left: 0;
-    width: 15px;
-    height: 100%;
-    background: linear-gradient(180deg, #003f8c, #0056b3);
-    border-radius: 4px 0 0 4px;
-    box-shadow: inset -2px 0 5px rgba(0,0,0,0.3);
-  }
-
-	.splash-screen {
-	  justify-content: flex-start;
-	  padding-top: 100px;
-	}
-
-  .pages {
-    position: absolute;
-    left: 15px;
-    width: calc(100% - 15px);
-    height: 100%;
-    background: linear-gradient(to right, #fff 0%, #f4f4f4 100%);
-    border-radius: 0 6px 6px 0;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.15);
-  }
-
-  .cover {
-    position: absolute;
-    inset: 0;
-    transform-origin: left center;
-    transform-style: preserve-3d;
-    transition: transform 1s ease;
-  }
-
-  .cover-front, .cover-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 6px;
-    backface-visibility: hidden;
-    overflow: hidden;
-  }
-
-  .cover-front {
-    background-image: url('Sampul.png'); /* 👉 Ganti dengan nama atau URL gambar cover kamu */
-    background-size: cover;
-    background-position: center;
-    border: 3px solid #003366;
-    border-radius: 6px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-    z-index: 2;
-  }
-
-  .cover-front .cover-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    text-align: center;
-    color: white;
-  }
-  .cover-front img {
-    width: 90px;
-    margin-bottom: 12px;
-  }
-  .cover-front h3 {
-    font-size: 16px;
-    line-height: 1.4;
-  }
-
-  .cover-back {
-    background: white;
-    transform: rotateY(180deg);
-    box-shadow: inset 0 0 15px rgba(0,0,0,0.2);
-  }
-
-  .book.open .cover {
-    transform: rotateY(-140deg);
+  .logo:hover {
+    transform: scale(1.15);
   }
 
   .splash-title {
@@ -140,6 +46,40 @@
     font-size: 22px;
     font-weight: bold;
     text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+  }
+
+  /* ===========================
+     Efek Layar Terbelah
+  ============================*/
+  .split-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    display: flex;
+  }
+  .split-left,
+  .split-right {
+    width: 50%;
+    background: linear-gradient(135deg, #89f7fe, #007bff);
+    transition: transform 1.2s ease;
+  }
+  .split-left {
+    transform: translateX(-100%);
+  }
+  .split-right {
+    transform: translateX(100%);
+  }
+  .split-screen.active .split-left {
+    transform: translateX(0);
+  }
+  .split-screen.active .split-right {
+    transform: translateX(0);
+  }
+  .split-screen.close .split-left {
+    transform: translateX(-100%);
+  }
+  .split-screen.close .split-right {
+    transform: translateX(100%);
   }
 
   /* ================== */
@@ -367,24 +307,19 @@
 </head>
 <body>
 
-<!-- Tampilan Pembuka (Splash) -->
+<!-- Splash Screen -->
 <div class="splash-screen" id="splash">
-  <div class="book" id="book">
-    <div class="book-inner">
-      <div class="spine"></div>
-      <div class="pages">
-        <div class="page-left"></div>
-        <div class="page-right"></div>
-      </div>
-      <div class="cover">
-	<div class="cover-front"></div>
-        <div class="cover-back"></div>
-      </div>
-    </div>
-  </div>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Lambang_Kota_Bau-Bau.png" 
+       alt="Logo Instansi" class="logo" id="logoSplash">
   <div class="splash-title">
     DIGITAL ARSIP PERENCANAAN<br>DINAS KESEHATAN KOTA BAUBAU
   </div>
+</div>
+
+<!-- Split animation layer -->
+<div class="split-screen" id="splitScreen">
+  <div class="split-left"></div>
+  <div class="split-right"></div>
 </div>
 
 <header>
@@ -455,17 +390,22 @@
 </footer>
 <script>
 const splash = document.getElementById('splash');
-const book = document.getElementById('book');
+const logoSplash = document.getElementById('logoSplash');
+const splitScreen = document.getElementById('splitScreen');
 
-// saat klik buku, tampilkan dashboard
-book.addEventListener('click', () => {
-	book.classList.add('open');
+logoSplash.addEventListener('click', () => {
+  // aktifkan animasi layar terbelah
+  splitScreen.classList.add('active');
 
+  // tunggu sedikit, lalu tutup efek & hilangkan splash
   setTimeout(() => {
-	  splash.classList.add('hidden');
-    splash.remove();
-    document.body.classList.add('show-content');
-  }, 900);
+    splitScreen.classList.add('close');
+    splash.classList.add('hidden');
+    setTimeout(() => {
+      splash.remove();
+      splitScreen.remove();
+    }, 800);
+  }, 500);
 });
 </script>
 <script src="script.js"></script>
