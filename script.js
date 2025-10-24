@@ -212,29 +212,36 @@ document.getElementById('search')?.addEventListener('input', () => applyFilters(
 document.getElementById('filterJenis')?.addEventListener('change', () => applyFilters());
 document.getElementById('refresh')?.addEventListener('click', () => fetchData());
 
-// Pop-up logic
+// --- Logika Pop-up Ulasan ---
 const popup = document.getElementById('feedbackPopup');
 const openBtn = document.getElementById('openFeedbackBtn');
+let membantuValue = '';
+let cepatValue = '';
 
-// Sistem jempol 👍👎
-const jawaban = { membantu: null, mempercepat: null };
-document.querySelectorAll('.thumb').forEach(icon => {
-  icon.addEventListener('click', function() {
-    const q = this.dataset.question;
-    const v = this.dataset.value;
+// Tombol buka/tutup popup
+openBtn.onclick = () => popup.style.display = 'flex';
+function tutupPopup() {
+  popup.style.display = 'none';
+}
 
-    // reset tampilan pilihan sebelumnya
-    document.querySelectorAll(`.thumb[data-question="${q}"]`).forEach(i => {
-      i.style.color = '';
-      i.style.transform = '';
-    });
+// --- Logika klik ikon jempol ---
+// Ambil semua tombol jempol dari dua pertanyaan
+const thumbsMembantu = document.querySelectorAll('#membantuIcons span');
+const thumbsCepat = document.querySelectorAll('#cepatIcons span');
 
-    // tandai pilihan aktif
-    this.style.color = v === 'ya' ? '#16a34a' : '#dc2626';
-    this.style.transform = 'scale(1.2)';
+thumbsMembantu.forEach(icon => {
+  icon.addEventListener('click', () => {
+    membantuValue = icon.dataset.value; // “ya” atau “tidak”
+    thumbsMembantu.forEach(i => i.classList.remove('selected'));
+    icon.classList.add('selected');
+  });
+});
 
-    // simpan ke objek jawaban
-    jawaban[q] = v;
+thumbsCepat.forEach(icon => {
+  icon.addEventListener('click', () => {
+    cepatValue = icon.dataset.value; // “ya” atau “tidak”
+    thumbsCepat.forEach(i => i.classList.remove('selected'));
+    icon.classList.add('selected');
   });
 });
 
@@ -281,5 +288,4 @@ async function kirimFeedback() {
     confirmButtonColor: '#3085d6'
   });
   tutupPopup();
-}
 }
