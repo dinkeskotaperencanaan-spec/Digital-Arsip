@@ -252,13 +252,26 @@ thumbs.forEach(icon => {
 // Tambahkan sedikit gaya agar ikon yang dipilih terlihat berbeda
 const style = document.createElement('style');
 style.textContent = `
-  .thumb.selected { 
-    transform: scale(1.3); 
-    color: #16a34a; 
-    text-shadow: 0 0 5px rgba(22,163,74,0.4);
+  .thumb {
+    transition: transform 0.2s, filter 0.2s;
+  }
+
+  /* Jempol atas (ya) */
+  .thumb[data-value="ya"].selected {
+    transform: scale(1.3);
+    color: #16a34a;
+    filter: drop-shadow(0 0 10px rgba(22,163,74,0.8));
+  }
+
+  /* Jempol bawah (tidak) */
+  .thumb[data-value="tidak"].selected {
+    transform: scale(1.3);
+    color: #dc2626;
+    filter: drop-shadow(0 0 10px rgba(220,38,38,0.8));
   }
 `;
 document.head.appendChild(style);
+
 
 // --- Kirim ke Google Sheet ---
 async function kirimFeedback() {
