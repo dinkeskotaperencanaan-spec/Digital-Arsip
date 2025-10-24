@@ -424,5 +424,44 @@ logoSplash.addEventListener('click', () => {
 });
 </script>
 <script src="script.js"></script>
+<script>
+document.getElementById('search').addEventListener('input', function() {
+  const query = this.value.trim().toLowerCase();
+  const treeContainer = document.getElementById('treeContainer');
+  const items = treeContainer.querySelectorAll('summary, .file');
+  let found = false;
+
+  items.forEach(el => {
+    const text = el.textContent.toLowerCase();
+    const parentDetails = el.closest('details');
+
+    // Reset tampilan
+    el.style.background = '';
+    el.style.fontWeight = '';
+
+    if (query && text.includes(query)) {
+      found = true;
+
+      // Sorot hasil
+      el.style.background = '#d1fae5';
+      el.style.fontWeight = 'bold';
+
+      // Buka semua induk <details>
+      let parent = el.closest('details');
+      while (parent) {
+        parent.open = true;
+        parent = parent.parentElement.closest('details');
+      }
+
+      // Scroll ke hasil pertama
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+
+  if (!found && query !== '') {
+    console.log('Tidak ditemukan hasil untuk:', query);
+  }
+});
+</script>
 </body>
 </html>
