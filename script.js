@@ -318,7 +318,7 @@ async function kirimFeedback() {
     Swal.fire({
       icon: 'success',
       title: 'Terima Kasih!',
-      text: 'Ulasan Anda telah dikirim ke Dinas Kesehatan Kota Baubau.',
+      text: 'Ulasan Anda telah dikirim :).',
       confirmButtonColor: '#3085d6'
     });
     tutupPopup();
