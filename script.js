@@ -215,8 +215,29 @@ document.getElementById('refresh')?.addEventListener('click', () => fetchData())
 // Pop-up logic
 const popup = document.getElementById('feedbackPopup');
 const openBtn = document.getElementById('openFeedbackBtn');
-const stars = document.querySelectorAll('.star');
-let selectedRating = 0;
+
+// Sistem jempol 👍👎
+const jawaban = { membantu: null, mempercepat: null };
+document.querySelectorAll('.thumb').forEach(icon => {
+  icon.addEventListener('click', function() {
+    const q = this.dataset.question;
+    const v = this.dataset.value;
+
+    // reset tampilan pilihan sebelumnya
+    document.querySelectorAll(`.thumb[data-question="${q}"]`).forEach(i => {
+      i.style.color = '';
+      i.style.transform = '';
+    });
+
+    // tandai pilihan aktif
+    this.style.color = v === 'ya' ? '#16a34a' : '#dc2626';
+    this.style.transform = 'scale(1.2)';
+
+    // simpan ke objek jawaban
+    jawaban[q] = v;
+  });
+});
+
 
 // Buka pop-up
 openBtn.onclick = () => popup.style.display = 'flex';
@@ -224,19 +245,6 @@ openBtn.onclick = () => popup.style.display = 'flex';
 function tutupPopup() {
   popup.style.display = 'none';
 }
-// Efek bintang interaktif
-stars.forEach(star => {
-  star.addEventListener('mouseover', () => {
-    stars.forEach(s => s.classList.remove('hover'));
-    for (let i = 0; i < star.dataset.value; i++) stars[i].classList.add('hover');
-  });
-  star.addEventListener('mouseout', () => stars.forEach(s => s.classList.remove('hover')));
-  star.addEventListener('click', () => {
-    selectedRating = star.dataset.value;
-    stars.forEach(s => s.classList.remove('selected'));
-    for (let i = 0; i < selectedRating; i++) stars[i].classList.add('selected');
-  });
-});
 
 // Kirim ke Google Sheet
 async function kirimFeedback() {
@@ -244,11 +252,11 @@ async function kirimFeedback() {
   const instansi = document.getElementById('instansi').value;
   const kebutuhan = document.getElementById('kebutuhan').value;
   const keterangan = document.getElementById('keterangan').value;
-  if (!nama || !instansi || !kebutuhan || selectedRating === 0) {
+  if (!nama || !instansi || !kebutuhan || !jawaban.membantu || !jawaban.mempercepat) {
     Swal.fire({
       icon: 'warning',
       title: 'Data Belum Lengkap',
-      text: 'Mohon lengkapi semua kolom dan pilih rating bintang.',
+      text: 'Mohon lengkapi semua kolom dan isi kedua pertanyaan.',
       confirmButtonColor: '#3085d6'
     });
     return;
@@ -262,7 +270,8 @@ async function kirimFeedback() {
       instansi, 
       kebutuhan, 
       keterangan, 
-      rating: selectedRating 
+      membantu: membantuValue, 
+      cepat: cepatValue
     })
   });
   Swal.fire({
