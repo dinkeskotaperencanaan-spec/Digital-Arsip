@@ -215,50 +215,58 @@ document.getElementById('refresh')?.addEventListener('click', () => fetchData())
 // --- Logika Pop-up Ulasan ---
 const popup = document.getElementById('feedbackPopup');
 const openBtn = document.getElementById('openFeedbackBtn');
-let membantuValue = '';
-let cepatValue = '';
+
+let jawaban = {
+  membantu: '',
+  mempercepat: ''
+};
 
 // Tombol buka/tutup popup
-openBtn.onclick = () => popup.style.display = 'flex';
+if (openBtn) {
+  openBtn.onclick = () => popup.style.display = 'flex';
+}
 function tutupPopup() {
   popup.style.display = 'none';
 }
 
 // --- Logika klik ikon jempol ---
-// Ambil semua tombol jempol dari dua pertanyaan
-const thumbsMembantu = document.querySelectorAll('#membantuIcons span');
-const thumbsCepat = document.querySelectorAll('#cepatIcons span');
+const thumbs = document.querySelectorAll('.thumb');
 
-thumbsMembantu.forEach(icon => {
+thumbs.forEach(icon => {
   icon.addEventListener('click', () => {
-    membantuValue = icon.dataset.value; // “ya” atau “tidak”
-    thumbsMembantu.forEach(i => i.classList.remove('selected'));
+    const question = icon.dataset.question; // “membantu” atau “mempercepat”
+    const value = icon.dataset.value;       // “ya” atau “tidak”
+    
+    // Simpan nilai jawaban
+    jawaban[question] = value;
+
+    // Hapus class “selected” di ikon sejenis
+    const siblings = document.querySelectorAll(`.thumb[data-question="${question}"]`);
+    siblings.forEach(i => i.classList.remove('selected'));
+
+    // Tambahkan class ke ikon yang diklik
     icon.classList.add('selected');
   });
 });
 
-thumbsCepat.forEach(icon => {
-  icon.addEventListener('click', () => {
-    cepatValue = icon.dataset.value; // “ya” atau “tidak”
-    thumbsCepat.forEach(i => i.classList.remove('selected'));
-    icon.classList.add('selected');
-  });
-});
+// Tambahkan sedikit gaya agar ikon yang dipilih terlihat berbeda
+const style = document.createElement('style');
+style.textContent = `
+  .thumb.selected { 
+    transform: scale(1.3); 
+    color: #16a34a; 
+    text-shadow: 0 0 5px rgba(22,163,74,0.4);
+  }
+`;
+document.head.appendChild(style);
 
-
-// Buka pop-up
-openBtn.onclick = () => popup.style.display = 'flex';
-// Tutup pop-up
-function tutupPopup() {
-  popup.style.display = 'none';
-}
-
-// Kirim ke Google Sheet
+// --- Kirim ke Google Sheet ---
 async function kirimFeedback() {
-  const nama = document.getElementById('nama').value;
-  const instansi = document.getElementById('instansi').value;
-  const kebutuhan = document.getElementById('kebutuhan').value;
-  const keterangan = document.getElementById('keterangan').value;
+  const nama = document.getElementById('nama').value.trim();
+  const instansi = document.getElementById('instansi').value.trim();
+  const kebutuhan = document.getElementById('kebutuhan').value.trim();
+  const keterangan = document.getElementById('keterangan').value.trim();
+
   if (!nama || !instansi || !kebutuhan || !jawaban.membantu || !jawaban.mempercepat) {
     Swal.fire({
       icon: 'warning',
@@ -268,24 +276,43 @@ async function kirimFeedback() {
     });
     return;
   }
-  await fetch("https://script.google.com/macros/s/AKfycbzF85StRcg7I1zREG32q15lbjPHEDcRR9wTbWPH_7WZSrNsGf59qefpdjTOgp1enQWq/exec", { // 🔗 Ganti URL Apps Script di sini
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ 
-      nama, 
-      instansi, 
-      kebutuhan, 
-      keterangan, 
-      membantu: membantuValue, 
-      cepat: cepatValue
-    })
-  });
-  Swal.fire({
-    icon: 'success',
-    title: 'Terima Kasih!',
-    text: 'Ulasan Anda telah dikirim ke Dinas Kesehatan Kota Baubau.',
-    confirmButtonColor: '#3085d6'
-  });
-  tutupPopup();
+
+  try {
+    await fetch("https://script.google.com/macros/s/AKfycbzF85StRcg7I1zREG32q15lbjPHEDcRR9wTbWPH_7WZSrNsGf59qefpdjTOgp1enQWq/exec", {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nama,
+        instansi,
+        kebutuhan,
+        keterangan,
+        membantu: jawaban.membantu,
+        mempercepat: jawaban.mempercepat
+      })
+    });
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Terima Kasih!',
+      text: 'Ulasan Anda telah dikirim ke Dinas Kesehatan Kota Baubau.',
+      confirmButtonColor: '#16a34a'
+    });
+
+    tutupPopup();
+    document.getElementById('nama').value = '';
+    document.getElementById('instansi').value = '';
+    document.getElementById('kebutuhan').value = '';
+    document.getElementById('keterangan').value = '';
+    jawaban = { membantu: '', mempercepat: '' };
+    thumbs.forEach(i => i.classList.remove('selected'));
+  } catch (error) {
+    console.error(error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Gagal Mengirim',
+      text: 'Terjadi kesalahan saat mengirim ulasan. Coba lagi nanti.',
+      confirmButtonColor: '#dc2626'
+    });
+  }
 }
