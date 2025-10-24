@@ -275,10 +275,10 @@ document.head.appendChild(style);
 
 // --- Kirim ke Google Sheet ---
 async function kirimFeedback() {
-  const nama = document.getElementById('nama').value.trim();
-  const instansi = document.getElementById('instansi').value.trim();
-  const kebutuhan = document.getElementById('kebutuhan').value.trim();
-  const keterangan = document.getElementById('keterangan').value.trim();
+  const nama = document.getElementById('nama').value;
+  const instansi = document.getElementById('instansi').value;
+  const kebutuhan = document.getElementById('kebutuhan').value;
+  const keterangan = document.getElementById('keterangan').value;
 
   if (!nama || !instansi || !kebutuhan || !jawaban.membantu || !jawaban.mempercepat) {
     Swal.fire({
@@ -290,42 +290,39 @@ async function kirimFeedback() {
     return;
   }
 
-  try {
-    await fetch("https://script.google.com/macros/s/AKfycbzF85StRcg7I1zREG32q15lbjPHEDcRR9wTbWPH_7WZSrNsGf59qefpdjTOgp1enQWq/exec", {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        nama,
-        instansi,
-        kebutuhan,
-        keterangan,
-        membantu: jawaban.membantu,
-        mempercepat: jawaban.mempercepat
-      })
-    });
+  // ✅ Tampilkan pesan loading langsung (tanpa delay)
+  Swal.fire({
+    title: 'Mengirim...',
+    text: 'Mohon tunggu sebentar.',
+    allowOutsideClick: false,
+    didOpen: () => Swal.showLoading()
+  });
 
+  // ✅ Kirim data tanpa menunggu hasil (agar cepat)
+  fetch("https://script.google.com/macros/s/AKfycbzF85StRcg7I1zREG32q15lbjPHEDcRR9wTbWPH_7WZSrNsGf59qefpdjTOgp1enQWq/exec", {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      nama, 
+      instansi, 
+      kebutuhan, 
+      keterangan, 
+      membantu: jawaban.membantu, 
+      mempercepat: jawaban.mempercepat 
+    })
+  });
+
+  // ✅ Tutup loading dan tampilkan sukses dengan jeda singkat (UX cepat)
+  setTimeout(() => {
     Swal.fire({
       icon: 'success',
       title: 'Terima Kasih!',
       text: 'Ulasan Anda telah dikirim ke Dinas Kesehatan Kota Baubau.',
-      confirmButtonColor: '#16a34a'
+      confirmButtonColor: '#3085d6'
     });
-
     tutupPopup();
-    document.getElementById('nama').value = '';
-    document.getElementById('instansi').value = '';
-    document.getElementById('kebutuhan').value = '';
-    document.getElementById('keterangan').value = '';
-    jawaban = { membantu: '', mempercepat: '' };
-    thumbs.forEach(i => i.classList.remove('selected'));
-  } catch (error) {
-    console.error(error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Gagal Mengirim',
-      text: 'Terjadi kesalahan saat mengirim ulasan. Coba lagi nanti.',
-      confirmButtonColor: '#dc2626'
-    });
-  }
+  }, 800); // tampilkan sukses setelah 0.8 detik saja
+}
+
 }
