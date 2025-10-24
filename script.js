@@ -324,5 +324,3 @@ async function kirimFeedback() {
     tutupPopup();
   }, 800); // tampilkan sukses setelah 0.8 detik saja
 }
-
-}
