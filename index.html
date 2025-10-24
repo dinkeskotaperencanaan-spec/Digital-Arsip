@@ -425,42 +425,50 @@ logoSplash.addEventListener('click', () => {
 </script>
 <script src="script.js"></script>
 <script>
+let searchTimeout; // variabel untuk menyimpan timer
+
 document.getElementById('search').addEventListener('input', function() {
   const query = this.value.trim().toLowerCase();
-  const treeContainer = document.getElementById('treeContainer');
-  const items = treeContainer.querySelectorAll('summary, .file');
-  let found = false;
 
-  items.forEach(el => {
-    const text = el.textContent.toLowerCase();
-    const parentDetails = el.closest('details');
+  // Hentikan timer sebelumnya (jika user masih mengetik)
+  clearTimeout(searchTimeout);
 
-    // Reset tampilan
-    el.style.background = '';
-    el.style.fontWeight = '';
+  // Set timer baru: tunggu 0.5 detik sebelum memproses pencarian
+  searchTimeout = setTimeout(() => {
+    const treeContainer = document.getElementById('treeContainer');
+    const items = treeContainer.querySelectorAll('summary, .file');
+    let found = false;
 
-    if (query && text.includes(query)) {
-      found = true;
+    items.forEach(el => {
+      const text = el.textContent.toLowerCase();
 
-      // Sorot hasil
-      el.style.background = '#d1fae5';
-      el.style.fontWeight = 'bold';
+      // Reset tampilan
+      el.style.background = '';
+      el.style.fontWeight = '';
 
-      // Buka semua induk <details>
-      let parent = el.closest('details');
-      while (parent) {
-        parent.open = true;
-        parent = parent.parentElement.closest('details');
+      if (query && text.includes(query)) {
+        found = true;
+
+        // Sorot hasil
+        el.style.background = '#d1fae5';
+        el.style.fontWeight = 'bold';
+
+        // Buka semua induk <details>
+        let parent = el.closest('details');
+        while (parent) {
+          parent.open = true;
+          parent = parent.parentElement.closest('details');
+        }
+
+        // Scroll ke hasil pertama
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
+    });
 
-      // Scroll ke hasil pertama
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (!found && query !== '') {
+      console.log('Tidak ditemukan hasil untuk:', query);
     }
-  });
-
-  if (!found && query !== '') {
-    console.log('Tidak ditemukan hasil untuk:', query);
-  }
+  }, 500); // 500 milidetik = 0.5 detik
 });
 </script>
 </body>
